@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPA Telemetry Monitor</title>
+    <!-- Link custom Stylesheet -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header id="main-header">
+        <div class="brand-section">
+            <div class="brand-logo"></div>
+            <h1 class="brand-title">RPA Telemetry Monitor</h1>
+        </div>
+
+        <!-- Fuzzy Search Bar (matches out-of-order partial strings) -->
+        <div class="search-section">
+            <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="search-input" class="search-input" placeholder="Search projects, company, partner or country...">
+        </div>
+
+        <!-- Telemetry Pipeline Buffer Controls -->
+        <div class="controls-section">
+            <div class="pipeline-status">
+                <span id="status-dot" class="status-dot pulsing"></span>
+                <span id="status-text">Live stream active</span>
+            </div>
+            <button id="play-pause-btn" class="btn-ctrl">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16" rx="1"/>
+                    <rect x="14" y="4" width="4" height="16" rx="1"/>
+                </svg>
+                Pause
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <div class="layout-container">
+        <!-- Sidebar - Operator Visibility & Layout Persistence Controls -->
+        <aside class="sidebar" id="layout-sidebar">
+            <h2 class="sidebar-title">Workspace Panels</h2>
+            
+            <div class="sidebar-menu">
+                <!-- Panel Toggles -->
+                <div class="sidebar-toggle-card">
+                    <span>KPI Dashboard</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-kpi-panel" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="sidebar-toggle-card">
+                    <span>Filters Bar</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-filter-panel" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="sidebar-toggle-card">
+                    <span>Telemetry Grid</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-grid-panel" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="sidebar-toggle-card">
+                    <span>Department Analytics</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-chart-panel" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Viewport -->
+        <main class="dashboard-main">
+            <!-- 1. KPIs Section (Feature 1) -->
+            <section class="kpi-section" id="kpi-panel-container">
+                <!-- KPI Card 1: Total Streamed Rows -->
+                <div class="kpi-card kpi-processed">
+                    <span class="kpi-label">Streamed Rows</span>
+                    <div class="kpi-value">
+                        <span id="kpi-processed">0</span>
+                    </div>
+                </div>
+
+                <!-- KPI Card 2: Active Robots Deployed -->
+                <div class="kpi-card kpi-robots">
+                    <span class="kpi-label">Active Robots</span>
+                    <div class="kpi-value">
+                        <span id="kpi-robots-val">0</span>
+                    </div>
+                </div>
+
+                <!-- KPI Card 3: Global Cumulative Savings -->
+                <div class="kpi-card kpi-savings">
+                    <span class="kpi-label">Cumulative Savings</span>
+                    <div class="kpi-value">
+                        <span id="kpi-savings-val">$0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Categorical Filters Bar (Feature 7) -->
+            <section class="filter-bar" id="filter-panel-container">
+                <!-- Dropdown 1: Automation Type -->
+                <div class="filter-group">
+                    <span class="filter-label">Automation Type</span>
+                    <div class="custom-select-wrapper" id="select-automation">
+                        <div class="select-trigger">
+                            <span>Select Options</span>
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="select-options">
+                            <!-- Populated Dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dropdown 2: Department -->
+                <div class="filter-group">
+                    <span class="filter-label">Department</span>
+                    <div class="custom-select-wrapper" id="select-department">
+                        <div class="select-trigger">
+                            <span>Select Options</span>
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="select-options">
+                            <!-- Populated Dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dropdown 3: Industry -->
+                <div class="filter-group">
+                    <span class="filter-label">Industry</span>
+                    <div class="custom-select-wrapper" id="select-industry">
+                        <div class="select-trigger">
+                            <span>Select Options</span>
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="select-options">
+                            <!-- Populated Dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Split Workspace (Grid and Analytics SVG Chart side-by-side) -->
+            <div class="workspace-grid">
+                <!-- Left Grid Panel (Feature 8) -->
+                <section class="grid-widget-card" id="grid-panel-container">
+                    <div class="widget-header">
+                        <h3 class="widget-title">Telemetry Stream</h3>
+                        <span id="row-counter" class="row-counter">Showing 0 of 0 projects</span>
+                    </div>
+
+                    <!-- Clickable headers with multi-sort tracking (Features 4 & 9) -->
+                    <div class="grid-header-row">
+                        <div class="grid-hdr" data-col="project_id">Proj ID</div>
+                        <div class="grid-hdr" data-col="project_name">Project Name</div>
+                        <div class="grid-hdr" data-col="project_status">Status</div>
+                        <div class="grid-hdr" data-col="automation_type">Automation Type</div>
+                        <div class="grid-hdr" data-col="robots_deployed">Robots</div>
+                        <div class="grid-hdr" data-col="budget_usd">Budget</div>
+                        <div class="grid-hdr" data-col="annual_savings_usd">Savings</div>
+                        <div class="grid-hdr" data-col="roi_percent">ROI %</div>
+                        <div class="grid-hdr" data-col="employee_hours_saved">Hours Saved</div>
+                        <div class="grid-hdr" data-col="department">Department</div>
+                        <div class="grid-hdr" data-col="industry">Industry</div>
+                        <div class="grid-hdr" data-col="country">Country</div>
+                    </div>
+
+                    <!-- Virtual scrollable content viewport -->
+                    <div class="grid-body-container" id="grid-container">
+                        <!-- Scroll bar spacer sizing element -->
+                        <div class="grid-spacer" id="grid-spacer"></div>
+                        <!-- Recycled row elements will be injected here -->
+                    </div>
+                </section>
+
+                <!-- Right Side SVG Analytics (Feature 6 example) -->
+                <section class="chart-widget-card" id="chart-panel-container">
+                    <div class="widget-header">
+                        <h3 class="widget-title">Savings by Department</h3>
+                    </div>
+                    <div class="chart-body">
+                        <!-- Custom SVG Horizontal Bar Chart -->
+                        <svg class="svg-chart" id="dept-chart-svg" viewBox="0 0 300 260" preserveAspectRatio="none">
+                            <!-- Rendered Dynamically in JS -->
+                        </svg>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Official pipeline stream harness script -->
+    <script src="./dataStream.js"></script>
+
+    <!-- Client-side application controller module -->
+    <script type="module" src="./src/app.js"></script>
+</body>
+</html>
